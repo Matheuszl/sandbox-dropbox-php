@@ -1,15 +1,42 @@
 <?php
 
-  require __DIR__.'/vendor/autoload.php';
+require __DIR__.'/vendor/autoload.php';
+use Spatie\Dropbox\Client as dropboxClient;
 
-  use Spatie\Dropbox\Client as dropboxClient;
-
-$token = "";
-
+$token = "insira seu token do dropbox";
 $drop_box = new DropboxClient($token);
 
-//Cria uma nova pasta
-$drop_box->createFolder("/TimeB/timeInfra");
+//Lista os arquivos na raiz do projeto
+$raiz_projeto = $drop_box->listFolder('/');
+
+//captura itens
+$pastas = $raiz_projeto['entries'];
+
+//nome da nova pasta a ser criada
+$name_nova_pasta = 'TimeE';
+
+//controle
+$if_exist = false;
+
+//percorre os itens
+for ($i=0; $i < sizeof($pastas) ; $i++) {
+  //verifica se existe alguma pasta com o nome da minha nova pasta
+  if ($pastas[$i]['.tag'] == 'folder' && $pastas[$i]['name'] == $name_nova_pasta) {
+    //se sim, sinaliza minha variavel de controle e fializa o for
+    $if_exist = true;
+    break;
+  }
+}
+
+//confere minha variavel de controle e cria a pasta ou sinaliza que ela já existe
+if ($if_exist == false) {
+    $drop_box->createFolder('/'.$name_nova_pasta);
+    print_r("Arquivo Criado!");
+} else {
+    print_r("Arquivo já existente!");
+}
+
+
 
 /**
  * metodos de upload:
