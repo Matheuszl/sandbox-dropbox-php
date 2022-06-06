@@ -3,7 +3,7 @@
 require __DIR__.'/vendor/autoload.php';
 use Spatie\Dropbox\Client as dropboxClient;
 
-$token = "insira seu token do dropbox";
+$token = "";
 $drop_box = new DropboxClient($token);
 
 //Lista os arquivos na raiz do projeto
@@ -13,7 +13,7 @@ $raiz_projeto = $drop_box->listFolder('/');
 $pastas = $raiz_projeto['entries'];
 
 //nome da nova pasta a ser criada
-$name_nova_pasta = 'TimeE';
+$name_nova_pasta = 'TimeF';
 
 //controle
 $if_exist = false;
@@ -30,33 +30,39 @@ for ($i=0; $i < sizeof($pastas) ; $i++) {
 
 //confere minha variavel de controle e cria a pasta ou sinaliza que ela já existe
 if ($if_exist == false) {
-    $drop_box->createFolder('/'.$name_nova_pasta);
-    print_r("Arquivo Criado!");
+    $return = $drop_box->createFolder('/'.$name_nova_pasta);
+    print_r("Pasta Criado! ");
 } else {
-    print_r("Arquivo já existente!");
+    print_r("Pasta já existente! ");
 }
-
-
-
-/**
- * metodos de upload:
- * add: manda um arquivo novo
- * overwrite: sobrescrever um arquivo já existente
- */
 
 //UPLOAD NA RAIZ DO DROPBOX
 // $drop_box->upload('/README.txt', file_get_contents(__DIR__.'/upload/README.txt'), 'add');
 
-//UPLOAD NA PASTA T.I
-$drop_box->upload('TimeA/timeTI/membros-time-infra.txt', file_get_contents(__DIR__.'/upload/membros-time-infra.txt'), 'add');
+//UPLOAD em subpastas
+$metadata = $drop_box->upload('TimeF/timeF.txt', file_get_contents(__DIR__.'/upload/timeF.txt'), 'add');
+
+//passar um nome de pasta/arquivo
+$arquivo_busca = 'timeX.txt';
+//Executa a pesquisa
+$search = $drop_box->search($arquivo_busca);
+//retorna true se o array e busca estiver vazio
+if(empty($search["matches"])) {
+  print_r('Nenhum arquivo encontrado!');
+} else {
+  var_dump($search);
+}
+
+
+
 
 //Move uma bastaqueesta dentro de outra pasta
-$drop_box->move('TimeB/timeInfra','/TimeA/timeInfra');
+// $drop_box->move('TimeB/timeInfra','/TimeA/timeInfra');
 
-$lista = $drop_box->listFolder('/TimeA/TimeTI');
+// $lista = $drop_box->listFolder('/TimeA/TimeTI');
 
-$timeTI = $lista['entries'][0];
-$path_display = $timeTI['path_display'];
+// $timeTI = $lista['entries'][0];
+// $path_display = $timeTI['path_display'];
 
-$linkTemp = $drop_box->getTemporaryLink($path_display);
-var_dump($linkTemp);
+// $linkTemp = $drop_box->getTemporaryLink($path_display);
+// var_dump($linkTemp);
