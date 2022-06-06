@@ -3,35 +3,35 @@
 require __DIR__.'/vendor/autoload.php';
 use Spatie\Dropbox\Client as dropboxClient;
 
-$token = "";
+$token = "Utilize seu token de desenvolvedor";
 $drop_box = new DropboxClient($token);
 
 //Lista os arquivos na raiz do projeto
-$raiz_projeto = $drop_box->listFolder('/');
+$root_project = $drop_box->listFolder('/');
 
 //captura itens
-$pastas = $raiz_projeto['entries'];
+$folders = $root_project['entries'];
 
 //nome da nova pasta a ser criada
-$name_nova_pasta = 'TimeF';
+$name_new_folder = 'TimeF';
 
 //controle
 $if_exist = false;
 
 //percorre os itens
-for ($i=0; $i < sizeof($pastas) ; $i++) {
-  //verifica se existe alguma pasta com o nome da minha nova pasta
-  if ($pastas[$i]['.tag'] == 'folder' && $pastas[$i]['name'] == $name_nova_pasta) {
-    //se sim, sinaliza minha variavel de controle e fializa o for
-    $if_exist = true;
-    break;
-  }
+for ($i=0; $i < sizeof($folders) ; $i++) {
+    //verifica se existe alguma pasta com o nome da nova pasta
+    if ($folders[$i]['.tag'] == 'folder' && $folders[$i]['name'] == $name_new_folder) {
+        //se sim, sinaliza minha variavel de controle e finaliza o for
+        $if_exist = true;
+        break;
+    }
 }
 
-//confere minha variavel de controle e cria a pasta ou sinaliza que ela já existe
+//confere var de controle e cria a pasta ou sinaliza que ela já existe
 if ($if_exist == false) {
-    $return = $drop_box->createFolder('/'.$name_nova_pasta);
-    print_r("Pasta Criado! ");
+    $return = $drop_box->createFolder('/'.$name_new_folder);
+    print_r("Pasta Criada! ");
 } else {
     print_r("Pasta já existente! ");
 }
@@ -42,16 +42,21 @@ if ($if_exist == false) {
 //UPLOAD em subpastas
 $metadata = $drop_box->upload('TimeF/timeF.txt', file_get_contents(__DIR__.'/upload/timeF.txt'), 'add');
 
-//passar um nome de pasta/arquivo
-$arquivo_busca = 'timeX.txt';
-//Executa a pesquisa
-$search = $drop_box->search($arquivo_busca);
-//retorna true se o array e busca estiver vazio
-if(empty($search["matches"])) {
-  print_r('Nenhum arquivo encontrado!');
-} else {
-  var_dump($search);
+
+function buscar_arquivo()
+{
+    //passar um nome de pasta/arquivo
+    $arquivo_busca = 'timeX.txt';
+    //Executa a pesquisa
+    $search = $drop_box->search($arquivo_busca);
+    //retorna true se o array e busca estiver vazio
+    if (empty($search["matches"])) {
+        print_r('Nenhum arquivo encontrado!');
+    } else {
+        print_r($search);
+    }
 }
+
 
 
 
